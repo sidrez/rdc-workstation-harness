@@ -145,5 +145,34 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertTrue((ROOT / ".gitleaks.toml").exists())
 
 
+    def test_gateway_contract_and_readme_policy(self):
+        agents = read("AGENTS.md")
+        readme = read("README.md")
+        windows_gateway = read("src/desktop_agent/mcp/readonly_gateway_server.mjs")
+        safe_mcp = read("src/desktop_agent/mcp/web_safe.mjs")
+        vps_client = read("tools/vps_gateway_stdio.mjs")
+        setup = read("scripts/vps-gateway.ps1")
+        self.assertIn("Every functional change MUST update the root README.md", agents)
+        self.assertIn("docs/VPS_GATEWAY_RU.md", readme)
+        self.assertIn("VPS", readme)
+        self.assertIn("127.0.0.1", windows_gateway)
+        self.assertIn("127.0.0.1", vps_client)
+        self.assertIn("MAX_CONNECTIONS = 2", windows_gateway)
+        self.assertIn("timingSafeEqual", windows_gateway)
+        self.assertIn("socket.destroy()", windows_gateway)
+        self.assertIn(" -R ", setup)
+        allowed = [
+            "pc_health", "pc_windows", "pc_active_window",
+            "pc_uia_tree", "pc_look_window"
+        ]
+        for name in allowed:
+            self.assertIn("registerTool('" + name + "'", safe_mcp)
+        for bad in ("desktop_action", "desktop_send_file", "desktop_exec"):
+            self.assertNotIn("registerTool('" + bad + "'", safe_mcp)
+        installer = read("scripts/install.ps1")
+        updater = read("scripts/update.ps1")
+        self.assertIn("repository = $Repository", installer)
+        self.assertIn("Repository = [string]$state.repository", updater)
+
 if __name__ == "__main__":
     unittest.main()

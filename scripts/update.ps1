@@ -89,6 +89,7 @@ $installArgs = @{
     Browser = [string]$state.browser
     RemoteCommanderVersion = [string]$state.remote_commander_version
     UpdateChannel = [string]$state.update_channel
+    Repository = [string]$state.repository
 }
 if ([bool]$state.install_bundled_chromium) { $installArgs.InstallBundledChromium = $true }
 if ([bool]$state.remote_commander_installed) { $installArgs.InstallRemoteCommander = $true }

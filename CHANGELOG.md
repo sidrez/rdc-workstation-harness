@@ -2,6 +2,28 @@
 
 All notable changes are documented here.
 
+## [0.2.4] - 2026-10-16
+
+### Added
+
+- Root AGENTS.md requires README and docs updates with every functional change.
+- Portable read-only VPS gateway (Windows loopback MCP, authenticated SSH reverse
+  port forwarding, VPS stdio client, smoke test; 5 allowed tools only).
+- VPS gateway documentation and operator CLI with start/test/status/stop.
+
+### Changed
+
+- Installer/updater accept and persist -Repository, so installations from
+  a fork can track their own main rather than upstream.
+- README covers PC Agent plugin, ChatGPT Web, VPS read-only gateway,
+  deployment and the OpenAI region/API access distinction.
+
+### Security
+
+- Gateway rejects unauthenticated TCP before spawning MCP, binds only
+  127.0.0.1, and does not transfer desktop.token to VPS.
+- No API region-block bypass or public port forwarding is configured.
+
 ## [0.2.3] - 2026-09-28
 
 ### Security

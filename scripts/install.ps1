@@ -13,6 +13,7 @@ param(
     [string]$RemoteCommanderVersion = "0.2.50",
     [ValidateSet("stable", "main")]
     [string]$UpdateChannel = "stable",
+    [string]$Repository = "timelordy/rdc-workstation-harness",
     [switch]$NoUpdateCheck,
     [switch]$RotateTokens,
     [switch]$NoAutostart,
@@ -25,6 +26,7 @@ $ProgressPreference = "SilentlyContinue"
 
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $InstallRoot = [IO.Path]::GetFullPath($InstallRoot)
+if ($Repository -notmatch "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$") { throw "Invalid GitHub -Repository" }
 $TokenDir = Join-Path $env:USERPROFILE ".chatgpt-desktop-agent"
 $TaskPrefix = "RDC Harness"
 
@@ -329,7 +331,7 @@ $RemoteEntryCurrent = Join-Path $InstallRoot "remote-commander\node_modules\@won
 $RemoteInstalled = Test-Path -LiteralPath $RemoteEntryCurrent
 $InstallState = [ordered]@{
     schema_version = 1
-    repository = "timelordy/rdc-workstation-harness"
+    repository = $Repository
     update_channel = $UpdateChannel
     update_check_enabled = (-not $NoUpdateCheck)
     installed_version = $SourceVersion

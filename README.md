@@ -1,6 +1,6 @@
 # RDC Workstation Harness
 
-[![CI](https://github.com/timelordy/rdc-workstation-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/timelordy/rdc-workstation-harness/actions/workflows/ci.yml)
+[![CI](https://github.com/sidrez/rdc-workstation-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/sidrez/rdc-workstation-harness/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Набор для развёртывания управляемого AI‑рабочего места на Windows вокруг
@@ -21,6 +21,8 @@ Playwright, обычные окна через UI Automation/Win32, прилож
 | Desktop Agent | UIA, Win32, COM, Python/PowerShell, адаптеры | `127.0.0.1:17322` |
 | Browser Bridge | DOM/ARIA‑управление браузером через Playwright | `127.0.0.1:17321` |
 | MCP proxy | отдаёт Desktop Agent MCP‑совместимому клиенту | stdio |
+| PC Agent Windows plugin | локальный плагин ChatGPT Desktop/Codex с шестью MCP-командами | GitHub Marketplace |
+| Частный VPS-шлюз read-only | 5 ограниченных MCP-команд поверх SSH -R, без перехвата курсора | Windows + VPS, только localhost |
 | `rdc_web.py` | предохранитель для заметных браузерных действий | CLI |
 | `pc-agent` | вызов Desktop Agent из терминала RDC, скриншоты для ChatGPT | CLI в PATH |
 ## Архитектура
@@ -51,12 +53,29 @@ Remote Desktop Commander Remote
 `desktop_describe` — параметры и пример конкретного действия или адаптера.
 Подробнее: [каталог действий](docs/ARCHITECTURE_RU.md#каталог-действий-и-самоописание).
 
+## ChatGPT, Codex и частный VPS-шлюз
+
+- **Codex / ChatGPT Desktop (локально):** плагин
+  [PC Agent Windows](plugins/pc-agent-windows/README.md), шесть инструментов
+  MCP (health/capabilities/describe/look/action/send-file). Доступ к действиям
+  осуществляется только с правами текущего Windows-пользователя.
+- **ChatGPT Web:** работа через авторизованный
+  [Remote Desktop Commander](docs/CHATGPT_RU.md) и команду pc-agent.
+  Импорт локального GitHub-плагина сам по себе не подключает инструменты
+  к браузерному ChatGPT.
+- **Частный VPS-шлюз:** [защищённое read-only соединение](docs/VPS_GATEWAY_RU.md)
+  Windows → VPS по исходящему SSH. Принимаются лишь pc_health, pc_windows,
+  pc_active_window, pc_uia_tree, pc_look_window. Нет открытых портов,
+  произвольного выполнения команд или физического ввода. Шлюз требует
+  отдельного разрешения/подключения к OpenAI Secure MCP Tunnel; при
+  403 unsupported_country_region_territory шлюз не устраняет отказ OpenAI.
+
 ## Быстрый запуск
 
 Требования: Windows 10/11, Python 3.10+, Node.js 18+ и Git.
 
 ```powershell
-git clone https://github.com/timelordy/rdc-workstation-harness.git
+git clone https://github.com/sidrez/rdc-workstation-harness.git
 cd rdc-workstation-harness
 Set-ExecutionPolicy -Scope Process Bypass
 .\scripts\install.ps1 -InstallRemoteCommander
@@ -131,6 +150,17 @@ Remote Commander. Их можно удалить явными ключами —
 - `stable` — рекомендуемый канал, отслеживает GitHub Releases.
 - `main` — отслеживает каждый новый commit в ветке `main`.
 
+Для **своего форка** при локальной установке задайте репозиторий явно,
+иначе будет использоваться upstream timelordy:
+
+```powershell
+.\scripts\install.ps1 -Repository sidrez/rdc-workstation-harness -UpdateChannel main
+```
+
+Параметр Repository сохраняется в install-state.json; updater берёт из него
+репозиторий и передаёт далее установщику. Push в main **не обновляет runtime
+немедленно**: нужно запустить updater или применить installer после git pull.
+
 Ручная проверка и установка:
 
 ```powershell
@@ -180,6 +210,8 @@ tests/               static security/regression checks
 - [Browser Bridge](docs/BROWSER_BRIDGE_RU.md)
 - [Эксплуатация](docs/OPERATIONS_RU.md)
 - [Навигатор обновлений](docs/UPDATES_RU.md)
+- [Приватный VPS-шлюз без доступа к командам и мыши](docs/VPS_GATEWAY_RU.md)
+- [Инструкции для кодовых агентов: README при каждом изменении](AGENTS.md)
 - [Устранение проблем](docs/TROUBLESHOOTING_RU.md)
 ## Известные границы
 
@@ -197,6 +229,10 @@ tests/               static security/regression checks
 python -m compileall -q src tools tests
 node --check src\browser_bridge\bridge.js
 node --check src\desktop_agent\mcp\server.mjs
+node --check src\desktop_agent\mcp\web_safe.mjs
+node --check src\desktop_agent\mcp\readonly_gateway_server.mjs
+node --check tools\vps_gateway_stdio.mjs
+node --check tools\vps_gateway_smoke.mjs
 python -m unittest discover -s tests -v
 ```
 

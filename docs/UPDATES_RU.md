@@ -24,6 +24,8 @@ push, не дожидаясь Release.
 ```powershell
 .\scripts\install.ps1 -UpdateChannel stable
 .\scripts\install.ps1 -UpdateChannel main
+# Если нужно отслеживать собственный fork, а не upstream:
+.\scripts\install.ps1 -Repository sidrez/rdc-workstation-harness -UpdateChannel main
 ```
 ## Что происходит на машине
 
