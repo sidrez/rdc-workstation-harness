@@ -1,0 +1,20 @@
+{
+  "name": "rdc-harness",
+  "interface": {
+    "displayName": "RDC Workstation Harness"
+  },
+  "plugins": [
+    {
+      "name": "pc-agent-windows",
+      "source": {
+        "source": "local",
+        "path": "./plugins/pc-agent-windows"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
