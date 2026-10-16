@@ -1,0 +1,35 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "pc-agent-windows",
+  "version": "0.2.0",
+  "description": "Desktop-only MCP connection to the local Windows Desktop Agent installed by RDC Workstation Harness. Provides window/UI automation, Win32/COM, app adapters and browser actions.",
+  "license": "MIT",
+  "keywords": [
+    "windows",
+    "desktop",
+    "pc-agent",
+    "mcp",
+    "uia",
+    "automation"
+  ],
+  "extensions": {
+    "com.openai": {
+      "requires_local_executor": true,
+      "interface": {
+        "displayName": "PC Agent — Windows",
+        "shortDescription": "Локальное управление Windows через Desktop Agent",
+        "longDescription": "Подключает к ChatGPT Desktop и Codex установленный на этом ПК RDC Workstation Harness. Предоставляет инструменты чтения интерфейса, управления окнами и действиями Windows. Не работает в обычных веб-чатах без отдельного удалённого MCP-канала.",
+        "developerName": "RDC Workstation Harness",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "defaultPrompt": [
+          "Через PC Agent проверь состояние локального Desktop Agent и покажи доступные действия.",
+          "Через PC Agent найди окно Revit и покажи его UIA-структуру, ничего не изменяя."
+        ]
+      }
+    }
+  }
+}
