@@ -10,6 +10,8 @@ All notable changes are documented here.
 - Portable read-only VPS gateway (Windows loopback MCP, authenticated SSH reverse
   port forwarding, VPS stdio client, smoke test; 5 allowed tools only).
 - VPS gateway documentation and operator CLI with start/test/status/stop.
+- Two live VPS smoke tests: unauthorized clients are rejected, and the complete
+  MCP path works through both direct TCP and the actual stdio gateway.
 
 ### Changed
 

@@ -70,6 +70,7 @@ switch ($Action) {
             Deploy-File $TokenFile "gateway.token"
             Deploy-File (Join-Path $RepoRoot "tools\vps_gateway_stdio.mjs") "stdio.mjs"
             Deploy-File (Join-Path $RepoRoot "tools\vps_gateway_smoke.mjs") "smoke.mjs"
+            Deploy-File (Join-Path $RepoRoot "tools\vps_gateway_stdio_smoke.mjs") "smoke_stdio.mjs"
         }
         $state = Read-State
         $serverId = 0
@@ -101,11 +102,15 @@ switch ($Action) {
         Write-Output "GATEWAY_BIND=127.0.0.1:$GatewayPort"
         & $PlinkPath @PlinkArgs "$VpsUser@$VpsHost" "node ~/.config/rdc-workstation-harness/smoke.mjs"
         if ($LASTEXITCODE -ne 0) { throw "VPS smoke test failed" }
+        & $PlinkPath @PlinkArgs "$VpsUser@$VpsHost" "node ~/.config/rdc-workstation-harness/smoke_stdio.mjs"
+        if ($LASTEXITCODE -ne 0) { throw "VPS stdio smoke test failed" }
     }
     "test" {
         Assert-VpsOptions
         & $PlinkPath @PlinkArgs "$VpsUser@$VpsHost" "node ~/.config/rdc-workstation-harness/smoke.mjs"
         if ($LASTEXITCODE -ne 0) { throw "VPS smoke test failed" }
+        & $PlinkPath @PlinkArgs "$VpsUser@$VpsHost" "node ~/.config/rdc-workstation-harness/smoke_stdio.mjs"
+        if ($LASTEXITCODE -ne 0) { throw "VPS stdio smoke test failed" }
     }
     "status" {
         $state = Read-State

@@ -58,9 +58,9 @@ Copy-Item .\src\desktop_agent\mcp\readonly_gateway_server.mjs "$env:LOCALAPPDATA
 
 
 Команда start в фоновом режиме запускает локальный сервер и plink -R,
-передаёт на VPS через SSH три файла (gateway.token, stdio.mjs, smoke.mjs),
+передаёт на VPS через SSH четыре файла (gateway.token, stdio.mjs, smoke.mjs),
 а затем выполняет end-to-end smoke-тест MCP initialize, tools/list и
-pc_health. Изолированный сервер не перезапускает RDC или PC Agent.
+pc_health через прямой TCP и через фактический stdio-клиент. Изолированный сервер не перезапускает RDC или PC Agent.
 Пока запуск требует интерактивного пользователя Windows и Pageant:
 автозапуск после перезагрузки ещё не настроен.
 
@@ -69,6 +69,7 @@ pc_health. Изолированный сервер не перезапускае
 
 ```bash
 node ~/.config/rdc-workstation-harness/smoke.mjs
+node ~/.config/rdc-workstation-harness/smoke_stdio.mjs
 node ~/.config/rdc-workstation-harness/stdio.mjs
 ```
 

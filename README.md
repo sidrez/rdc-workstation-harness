@@ -69,6 +69,8 @@ Remote Desktop Commander Remote
   произвольного выполнения команд или физического ввода. Шлюз требует
   отдельного разрешения/подключения к OpenAI Secure MCP Tunnel; при
   403 unsupported_country_region_territory шлюз не устраняет отказ OpenAI.
+  Проверка шлюза выполняется двумя smoke-тестами: прямое MCP/TCP и фактический
+  MCP stdio-клиент на VPS. Отклонение неверного AUTH проверяется отдельно.
 
 ## Быстрый запуск
 

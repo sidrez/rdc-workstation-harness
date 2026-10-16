@@ -151,6 +151,8 @@ class RepositoryContractTests(unittest.TestCase):
         windows_gateway = read("src/desktop_agent/mcp/readonly_gateway_server.mjs")
         safe_mcp = read("src/desktop_agent/mcp/web_safe.mjs")
         vps_client = read("tools/vps_gateway_stdio.mjs")
+        stdio_smoke = read("tools/vps_gateway_stdio_smoke.mjs")
+        self.assertIn("STDIO_GATEWAY_TOOL_ALLOWLIST", stdio_smoke)
         setup = read("scripts/vps-gateway.ps1")
         self.assertIn("Every functional change MUST update the root README.md", agents)
         self.assertIn("docs/VPS_GATEWAY_RU.md", readme)
